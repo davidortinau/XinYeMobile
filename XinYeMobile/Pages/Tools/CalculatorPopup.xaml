@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<toolkit:Popup xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+               xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+               xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+               xmlns:mi="http://www.aathifmahir.com/dotnet/2022/maui/icons"
+               xmlns:vm="clr-namespace:XinYeMobile.ViewModels"
+               x:DataType="vm:CalculatorPopupViewModel"
+               x:Class="XinYeMobile.Pages.Tools.CalculatorPopup"
+                 >
+    <Border StrokeThickness="0"
+            x:Name="calculatorView"
+            VerticalOptions="End"
+            BackgroundColor="#eaecf3">
+    <Grid RowDefinitions="*,3*">
+            <!--数据显示区-->
+            <Border Grid.Row="0"
+                    StrokeShape="RoundRectangle 10"
+                    StrokeThickness="0"
+                    Margin="10">
+                <Grid RowDefinitions="*,3*"
+                      BackgroundColor="White">
+                    <Label Grid.Row="0"
+                               x:Name="expression"
+                               Text="{Binding Expression}"
+                               LineBreakMode="TailTruncation"
+                               TextColor="Gray"
+                               HorizontalOptions="EndAndExpand"
+                               Margin="10,0,10,0"
+                               VerticalOptions="Center"/>
+                    <Label Grid.Row="1"
+                               x:Name="result"
+                               Text="{Binding Result}"
+                               LineBreakMode="TailTruncation"
+                               FontSize="28"
+                               TextColor="#283155"
+                               FontAttributes="Bold"
+                               Margin="10,0,10,0"
+                               HorizontalOptions="EndAndExpand"
+                               VerticalOptions="Center"
+                               VerticalTextAlignment="Center"/>
+                </Grid>
+            </Border>
+            <!--按键区-->
+            <Grid Grid.Row="1"
+                  Margin="10"
+                  RowDefinitions="*,*,*,*,*"
+                  ColumnDefinitions="*,*,*,*"
+                  ColumnSpacing="10"
+                  RowSpacing="10">
+                <Grid.Resources>
+                    <Style TargetType="Border">
+                        <Setter Property="StrokeThickness"
+                                Value="0"/>
+                        <Setter Property="StrokeShape"
+                                Value="RoundRectangle 10"/>
+                    </Style>
+                    <Style TargetType="Button">
+                        <Setter Property="BackgroundColor"
+                                Value="#fdfdfd"/>
+                        <Setter Property="TextColor"
+                                Value="Black"/>
+                        <Setter Property="FontAttributes"
+                                Value="Bold"/>
+                        <Setter Property="FontSize"
+                                Value="16"/>
+                    </Style>
+                </Grid.Resources>
+                <!--<Border Grid.Row="0"
+                        Grid.Column="0">
+                    <Button Text="%"
+                            BackgroundColor="#dddfeb"
+                            Command="{Binding ClickCommand}"
+                            CommandParameter="%"/>
+                </Border>-->
+                <Border Grid.Row="0"
+                        Grid.Column="0">
+                    <Button Text="CE"
+                            BackgroundColor="#dddfeb"
+                            Command="{Binding ClickCommand}"
+                            CommandParameter="CE"/>
+                </Border>
+                <Border Grid.Row="0"
+                        Grid.Column="1">
+                    <Button Text="C"
+                            BackgroundColor="#dddfeb"
+                            Command="{Binding ClickCommand}"
+                            CommandParameter="C"/>
+                </Border>
+                <Border Grid.Row="0"
+                        Grid.Column="3"
+                        >
+                    <Button Text="{mi:Material Icon=West}"
+                            TextColor="White"
+                            FontSize="24"
+                            BackgroundColor="#ffb125"
+                            Command="{Binding ClickCommand}"
+                            CommandParameter="del"/>
+                </Border>
+                <Border Grid.Row="1"
+                        Grid.Column="0">
+                    <Button Text="7"
+                            Command="{Binding ClickCommand}"
+                            CommandParameter="7"/>
+                </Border>
+                <Border Grid.Row="1"
+                        Grid.Column="1">
+                    <Button Text="8"
+                            Command="{Binding ClickCommand}"
+                            CommandParameter="8"/>
+                </Border>
+                <Border Grid.Row="1"
+                        Grid.Column="2">
+                    <Button Text="9"
+                            Command="{Binding ClickCommand}"
+                            CommandParameter="9"/>
+                </Border>
+                <Border Grid.Row="1"
+                        Grid.Column="3">
+                    <Button Text="÷"
+                            BackgroundColor="#dddfeb"
+                            Command="{Binding ClickCommand}"
+                            CommandParameter="÷"/>
+                </Border>
+                <Border Grid.Row="2"
+                        Grid.Column="0">
+                    <Button Text="4"
+                            Command="{Binding ClickCommand}"
+                            CommandParameter="4"/>
+                </Border>
+                <Border Grid.Row="2"
+                        Grid.Column="1">
+                    <Button Text="5"
+                            Command="{Binding ClickCommand}"
+                            CommandParameter="5"/>
+                </Border>
+                <Border Grid.Row="2"
+                        Grid.Column="2">
+                    <Button Text="6"
+                            Command="{Binding ClickCommand}"
+                            CommandParameter="6"/>
+                </Border>
+                <Border Grid.Row="2"
+                        Grid.Column="3">
+                    <Button Text="×"
+                            BackgroundColor="#dddfeb"
+                            Command="{Binding ClickCommand}"
+                            CommandParameter="×"/>
+                </Border>
+                <Border Grid.Row="3"
+                        Grid.Column="0">
+                    <Button Text="1"
+                            Command="{Binding ClickCommand}"
+                            CommandParameter="1"/>
+                </Border>
+                <Border Grid.Row="3"
+                        Grid.Column="1">
+                    <Button Text="2"
+                            Command="{Binding ClickCommand}"
+                            CommandParameter="2"/>
+                </Border>
+                <Border Grid.Row="3"
+                        Grid.Column="2">
+                    <Button Text="3"
+                            Command="{Binding ClickCommand}"
+                            CommandParameter="3"/>
+                </Border>
+                <Border Grid.Row="3"
+                        Grid.Column="3">
+                    <Button Text="-"
+                            Command="{Binding ClickCommand}"
+                            CommandParameter="-"/>
+                </Border>
+                <Border Grid.Row="4"
+                        Grid.Column="0">
+                    <Button Text="0"
+                            Command="{Binding ClickCommand}"
+                            CommandParameter="0"/>
+                </Border>
+                <Border Grid.Row="4"
+                        Grid.Column="1">
+                    <Button Text="."
+                            Command="{Binding ClickCommand}"
+                            CommandParameter="."/>
+                </Border>
+                <Border Grid.Row="4"
+                        Grid.Column="2">
+                    <Button Text="="
+                            TextColor="White"
+                            BackgroundColor="#4f6ef2"
+                            Command="{Binding ClickCommand}"
+                            CommandParameter="="/>
+                </Border>
+                <Border Grid.Row="4"
+                        Grid.Column="3">
+                    <Button Text="+"
+                            BackgroundColor="#dddfeb"
+                            Command="{Binding ClickCommand}"
+                            CommandParameter="+"/>
+                </Border>
+            </Grid>
+        </Grid>
+    </Border>
+</toolkit:Popup>

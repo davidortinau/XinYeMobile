@@ -1,0 +1,554 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:model="clr-namespace:XinYeMobile.Models.QuestionBankModels"
+             xmlns:vm="clr-namespace:XinYeMobile.ViewModels"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             xmlns:mi="http://www.aathifmahir.com/dotnet/2022/maui/icons"
+             xmlns:converter="clr-namespace:XinYeMobile.Converters"
+             x:Class="XinYeMobile.Models.QuestionBankModels.QuestionPracticePage"
+             x:DataType="vm:QuestionPracticeViewModel"
+             Shell.TabBarIsVisible="False"
+             Title="章节练习">
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <toolkit:IsStringNullOrEmptyConverter x:Key="IsStringNullOrEmptyConverter" />
+            <toolkit:IsStringNotNullOrEmptyConverter x:Key="IsStringNotNullOrEmptyConverter"/>
+            <converter:QuestionTypeToStringConverter x:Key="QuestionTypeToStringConverter"/>
+            <converter:IsSingleChoiceConverter x:Key="IsSingleChoiceConverter"/>
+            <converter:IsNotSingleChoiceConverter x:Key="IsNotSingleChoiceConverter"/>
+            <converter:IsTextAnswerQuestionConverter x:Key="IsTextAnswerQuestionConverter"/>
+            <converter:IsMultiChoiceConverter x:Key="IsMultiChoiceConverter"/>
+            <converter:AddConverter x:Key="AddConverter"/>
+            <toolkit:IsEqualConverter x:Key="IsEqualConverter"/>
+            
+        </ResourceDictionary>
+    </ContentPage.Resources>
+    <Shell.TitleView>
+        <Grid RowDefinitions="*,*">
+            <Grid Grid.Row="0"
+                  ColumnDefinitions="auto,*">
+                <HorizontalStackLayout Grid.Column="0">
+                    <Label Text="{mi:Material Icon=AvTimer}"
+                           FontSize="24"
+                           VerticalOptions="EndAndExpand"/>
+                    <Label Text="{Binding Duration}"
+                           VerticalOptions="EndAndExpand"/>
+                </HorizontalStackLayout>
+                <FlexLayout Grid.Column="1"
+                            JustifyContent="End"
+                            Margin="10,0">
+                    <Label Text="{mi:Material Icon=Contrast}"
+                           FontSize="23"
+                           Margin="5,0"
+                           VerticalOptions="EndAndExpand">
+                        <Label.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding SwitchThemeCommand}"/>
+                        </Label.GestureRecognizers>
+                    </Label>
+                    <Label Text="{mi:Material Icon=FormatSize}"
+                           FontSize="24"
+                           Margin="5,0"
+                           VerticalOptions="EndAndExpand">
+                        <Label.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding ChangeFontSizeCommand}"/>
+                        </Label.GestureRecognizers>
+                    </Label>
+                    <Label Text="{mi:Material Icon=Share}"
+                           FontSize="22"
+                           VerticalOptions="EndAndExpand"/>
+                </FlexLayout>
+            </Grid>
+            <Grid Grid.Row="1"
+                  ColumnDefinitions="*,auto,auto">
+                <Label Text="{Binding Title}"
+                       Grid.Column="0"
+                       LineBreakMode="TailTruncation"
+                       FontAttributes="Bold"
+                       VerticalOptions="CenterAndExpand"/>
+                <Label Grid.Column="1"
+                       Margin="10,0"
+                       VerticalOptions="CenterAndExpand">
+                    <Label.FormattedText>
+                        <FormattedString>
+                            <Span Text="{Binding Position,Converter={StaticResource AddConverter},ConverterParameter='1'}"/>
+                            <Span Text="/"/>
+                            <Span Text="{Binding QuestionList.Count}"/>
+                        </FormattedString>
+                    </Label.FormattedText>
+                </Label>
+                <Button Text="交卷"
+                        Padding="3"
+                        IsVisible="False"
+                        Margin="0,0,10,0"
+                        Grid.Column="3">
+                    <Button.Triggers>
+                        <DataTrigger TargetType="Button"
+                                     Binding="{Binding IsPracticeMode}"
+                                     Value="false">
+                            <Setter Property="IsVisible"
+                                    Value="True"/>
+                        </DataTrigger>
+                    </Button.Triggers>
+                </Button>
+            </Grid>
+        </Grid>
+    </Shell.TitleView>
+    <Grid RowDefinitions="*,50">
+        <CarouselView ItemsSource="{Binding QuestionList}"
+                      CurrentItem="{Binding CurrentQuestion,Mode=OneWayToSource}"
+                      Position="{Binding Position}"
+                      Grid.Row="0"
+                      IsScrollAnimated="False"
+                      x:Name="carouselview"
+                      Loop="False">
+            <CarouselView.ItemTemplate>
+                <DataTemplate x:DataType="model:QuestionModel">
+                    <Grid RowDefinitions="auto,20,*">
+                        <ScrollView x:Name="description"
+                                    Grid.Row="0"
+                                    IsVisible="{Binding Description,Converter={StaticResource IsStringNotNullOrEmptyConverter}}"
+                                    HeightRequest="300">
+                            <VerticalStackLayout>
+                                <Label Text="{Binding QuestionType,Converter={StaticResource QuestionTypeToStringConverter}}"
+                                       TextColor="{StaticResource Primary}"
+                                       FontAttributes="Bold"
+                                       Margin="10,10,10,0"/>
+                                <Label Text="{Binding Description}"
+                                       TextType="Html"
+                                       FontSize="{Binding FontSize,Source={RelativeSource AncestorType={x:Type vm:QuestionPracticeViewModel}}}"
+                                       Margin="10"/>
+                            </VerticalStackLayout>
+                        </ScrollView>
+                        <Border Grid.Row="1"
+                                StrokeThickness="0"
+                                BackgroundColor="{StaticResource Gray100}"
+                                IsVisible="{Binding Description,Converter={StaticResource IsStringNotNullOrEmptyConverter}}"
+                                x:Name="swiper">
+                            <Border.Shadow>
+                                <Shadow Brush="Gray"
+                                        Offset="0,-20"
+                                        Radius="20"/>
+                            </Border.Shadow>
+                            <Border VerticalOptions="CenterAndExpand"
+                                    HeightRequest="5"
+                                    StrokeShape="RoundRectangle 2.5"
+                                    StrokeThickness="0"
+                                    BackgroundColor="White"
+                                    WidthRequest="50"/>
+                            <Border.GestureRecognizers>
+                                <PanGestureRecognizer PanUpdated="OnPanUpdated"
+                                                      />
+                            </Border.GestureRecognizers>
+                        </Border>
+                        <ScrollView Grid.Row="2">
+                            <VerticalStackLayout>
+                                <Label Margin="10,10,10,0"
+                                       >
+                                    <Label.FormattedText>
+                                        <FormattedString>
+                                            <Span Text="新叶 - "
+                                                  TextColor="{StaticResource Gray300}"
+                                                  FontAttributes="Bold"/>
+                                            <Span Text="{Binding QuestionType,Converter={StaticResource QuestionTypeToStringConverter}}"
+                                                  TextColor="{StaticResource Primary}"
+                                                  FontAttributes="Bold"/>
+                                        </FormattedString>
+                                    </Label.FormattedText>
+                                </Label>
+                                <VerticalStackLayout BindableLayout.ItemsSource="{Binding Questions}">
+                                    <BindableLayout.ItemTemplate>
+                                        <DataTemplate x:DataType="model:QuestionItem">
+                                            <!--单独的小题-->
+                                            <VerticalStackLayout>
+                                                    <Label Text="{Binding Question}"
+                                                           TextType="Html"
+                                                           FontAttributes="Bold"
+                                                           FontSize="{Binding FontSize,Source={RelativeSource AncestorType={x:Type vm:QuestionPracticeViewModel}}}"
+                                                           Margin="10"/>
+                                                    <VerticalStackLayout BindableLayout.ItemsSource="{Binding Choices}">
+                                                        <BindableLayout.ItemTemplate>
+                                                            <DataTemplate x:DataType="model:ChoiceItem">
+                                                                <Border Margin="10"
+                                                                    Padding="10"
+                                                                    StrokeThickness="0"
+                                                                    BackgroundColor="{StaticResource SnowGray}"
+                                                                    StrokeShape="RoundRectangle 10">
+                                                                    <Border.Triggers>
+                                                                        <MultiTrigger TargetType="Border">
+                                                                            <MultiTrigger.Conditions>
+                                                                                <BindingCondition Binding="{Binding IsChecked}"
+                                                                                              Value="true"/>
+                                                                                <BindingCondition Binding="{Binding QuestionType,Source={RelativeSource AncestorType={x:Type model:QuestionModel}},Converter={StaticResource IsSingleChoiceConverter}}"
+                                                                                              Value="false"/>
+                                                                                <BindingCondition Binding="{Binding IsShowAnswer,Source={RelativeSource AncestorType={x:Type model:QuestionItem}}}"
+                                                                                              Value="false"/>
+                                                                            </MultiTrigger.Conditions>
+                                                                            <Setter Property="BackgroundColor"
+                                                                                Value="#dce8fc"/>
+                                                                        </MultiTrigger>
+                                                                        <MultiTrigger TargetType="Border">
+                                                                            <MultiTrigger.Conditions>
+                                                                                <BindingCondition Binding="{Binding IsChecked}"
+                                                                                              Value="true"/>
+                                                                                <BindingCondition Binding="{Binding IsAnswer}"
+                                                                                              Value="true"/>
+                                                                                <BindingCondition Binding="{Binding IsShowAnswer,Source={RelativeSource AncestorType={x:Type model:QuestionItem}}}"
+                                                                                              Value="true"/>
+                                                                                <BindingCondition Binding="{Binding IsPracticeMode,Source={RelativeSource AncestorType={x:Type vm:QuestionPracticeViewModel}}}"
+                                                                                              Value="true"/>
+                                                                            </MultiTrigger.Conditions>
+                                                                            <Setter Property="BackgroundColor"
+                                                                                Value="#e4f9f4"/>
+                                                                        </MultiTrigger>
+                                                                        <MultiTrigger TargetType="Border">
+                                                                            <MultiTrigger.Conditions>
+                                                                                <BindingCondition Binding="{Binding IsChecked}"
+                                                                                              Value="false"/>
+                                                                                <BindingCondition Binding="{Binding IsShowAnswer,Source={RelativeSource AncestorType={x:Type model:QuestionItem}}}"
+                                                                                              Value="true"/>
+                                                                                <BindingCondition Binding="{Binding IsAnswer}"
+                                                                                              Value="true"/>
+                                                                                <BindingCondition Binding="{Binding IsPracticeMode,Source={RelativeSource AncestorType={x:Type vm:QuestionPracticeViewModel}}}"
+                                                                                              Value="true"/>
+                                                                            </MultiTrigger.Conditions>
+                                                                            <Setter Property="BackgroundColor"
+                                                                                Value="#e4f9f4"/>
+                                                                        </MultiTrigger>
+                                                                        <MultiTrigger TargetType="Border">
+                                                                            <MultiTrigger.Conditions>
+                                                                                <BindingCondition Binding="{Binding IsChecked}"
+                                                                                              Value="true"/>
+                                                                                <BindingCondition Binding="{Binding IsShowAnswer,Source={RelativeSource AncestorType={x:Type model:QuestionItem}}}"
+                                                                                              Value="true"/>
+                                                                                <BindingCondition Binding="{Binding IsAnswer}"
+                                                                                              Value="false"/>
+                                                                                <BindingCondition Binding="{Binding IsPracticeMode,Source={RelativeSource AncestorType={x:Type vm:QuestionPracticeViewModel}}}"
+                                                                                              Value="true"/>
+                                                                            </MultiTrigger.Conditions>
+                                                                            <Setter Property="BackgroundColor"
+                                                                                Value="#feeeef"/>
+                                                                        </MultiTrigger>
+                                                                    </Border.Triggers>
+                                                                    <Grid>
+                                                                        <Label Text="{Binding Description}"
+                                                                               TextType="Html"
+                                                                               LineBreakMode="WordWrap"
+                                                                               TextColor="Black"
+                                                                               FontSize="{Binding FontSize,Source={RelativeSource AncestorType={x:Type vm:QuestionPracticeViewModel}}}"
+                                                                               >
+                                                                            <Label.Triggers>
+                                                                                <MultiTrigger TargetType="Label">
+                                                                                    <MultiTrigger.Conditions>
+                                                                                        <BindingCondition Binding="{Binding IsChecked}"
+                                                                                              Value="true"/>
+                                                                                        <BindingCondition Binding="{Binding QuestionType,Source={RelativeSource AncestorType={x:Type model:QuestionModel}},Converter={StaticResource IsSingleChoiceConverter}}"
+                                                                                              Value="false"/>
+                                                                                        <BindingCondition Binding="{Binding IsShowAnswer,Source={RelativeSource AncestorType={x:Type model:QuestionItem}}}"
+                                                                                              Value="false"/>
+                                                                                    </MultiTrigger.Conditions>
+                                                                                    <Setter Property="TextColor"
+                                                                                Value="{StaticResource Primary}"/>
+                                                                                </MultiTrigger>
+                                                                                <MultiTrigger TargetType="Label">
+                                                                                    <MultiTrigger.Conditions>
+                                                                                        <BindingCondition Binding="{Binding IsChecked}"
+                                                                                              Value="true"/>
+                                                                                        <BindingCondition Binding="{Binding IsAnswer}"
+                                                                                              Value="true"/>
+                                                                                        <BindingCondition Binding="{Binding IsShowAnswer,Source={RelativeSource AncestorType={x:Type model:QuestionItem}}}"
+                                                                                              Value="true"/>
+                                                                                        <BindingCondition Binding="{Binding IsPracticeMode,Source={RelativeSource AncestorType={x:Type vm:QuestionPracticeViewModel}}}"
+                                                                                              Value="true"/>
+                                                                                    </MultiTrigger.Conditions>
+                                                                                    <Setter Property="TextColor"
+                                                                                Value="#00c492"/>
+                                                                                </MultiTrigger>
+                                                                                <MultiTrigger TargetType="Label">
+                                                                                    <MultiTrigger.Conditions>
+                                                                                        <BindingCondition Binding="{Binding IsChecked}"
+                                                                                              Value="false"/>
+                                                                                        <BindingCondition Binding="{Binding IsAnswer}"
+                                                                                              Value="true"/>
+                                                                                        <BindingCondition Binding="{Binding IsShowAnswer,Source={RelativeSource AncestorType={x:Type model:QuestionItem}}}"
+                                                                                              Value="true"/>
+                                                                                        <BindingCondition Binding="{Binding IsPracticeMode,Source={RelativeSource AncestorType={x:Type vm:QuestionPracticeViewModel}}}"
+                                                                                              Value="true"/>
+                                                                                    </MultiTrigger.Conditions>
+                                                                                    <Setter Property="TextColor"
+                                                                                Value="#00c492"/>
+                                                                                </MultiTrigger>
+                                                                                <MultiTrigger TargetType="Label">
+                                                                                    <MultiTrigger.Conditions>
+                                                                                        <BindingCondition Binding="{Binding IsChecked}"
+                                                                                              Value="true"/>
+                                                                                        <BindingCondition Binding="{Binding IsAnswer}"
+                                                                                              Value="false"/>
+                                                                                        <BindingCondition Binding="{Binding IsShowAnswer,Source={RelativeSource AncestorType={x:Type model:QuestionItem}}}"
+                                                                                              Value="true"/>
+                                                                                        <BindingCondition Binding="{Binding IsPracticeMode,Source={RelativeSource AncestorType={x:Type vm:QuestionPracticeViewModel}}}"
+                                                                                              Value="true"/>
+                                                                                    </MultiTrigger.Conditions>
+                                                                                    <Setter Property="TextColor"
+                                                                                Value="#f4454c"/>
+                                                                                </MultiTrigger>
+                                                                            </Label.Triggers>
+                                                                        </Label>
+                                                                    </Grid>
+                                                                    <Border.GestureRecognizers>
+                                                                        <TapGestureRecognizer Command="{Binding SelectCommand,Source={RelativeSource AncestorType={x:Type vm:QuestionPracticeViewModel}}}"
+                                                                                          CommandParameter="{Binding .}"/>
+                                                                    </Border.GestureRecognizers>
+                                                                </Border>
+                                                            </DataTemplate>
+                                                        </BindableLayout.ItemTemplate>
+                                                    </VerticalStackLayout>
+                                                    <!--显示输入框和确认按钮-->
+                                                    <Editor Placeholder="请输入您的答案"
+                                                        Margin="10"
+                                                        HeightRequest="120"
+                                                        IsVisible="{Binding QuestionType,Source={RelativeSource AncestorType={x:Type model:QuestionModel}},Converter={StaticResource IsTextAnswerQuestionConverter}}"/>
+                                                <Button Text="查看答案"
+                                                            Margin="10"
+                                                            IsVisible="False"
+                                                            IsEnabled="False"
+                                                            Command="{Binding ConfirmCommand,Source={RelativeSource AncestorType={x:Type vm:QuestionPracticeViewModel}}}"
+                                                            CommandParameter="{Binding .,Source={RelativeSource AncestorType={x:Type model:QuestionItem}}}">
+                                                    <Button.Triggers>
+                                                        <MultiTrigger TargetType="Button">
+                                                            <MultiTrigger.Conditions>
+                                                                <BindingCondition Binding="{Binding QuestionType,Source={RelativeSource AncestorType={x:Type model:QuestionModel}},Converter={StaticResource IsMultiChoiceConverter}}"
+                                                                                  Value="true"/>
+                                                                <BindingCondition Binding="{Binding IsPracticeMode,Source={RelativeSource AncestorType={x:Type vm:QuestionPracticeViewModel}}}"
+                                                                                  Value="true"/>
+                                                                <BindingCondition Binding="{Binding IsShowAnswer,Source={RelativeSource AncestorType={x:Type model:QuestionItem}}}"
+                                                                                  Value="false"/>
+                                                            </MultiTrigger.Conditions>
+                                                            <Setter Property="IsVisible"
+                                                                    Value="True"/>
+                                                        </MultiTrigger>
+                                                        <MultiTrigger TargetType="Button">
+                                                            <MultiTrigger.Conditions>
+                                                                <BindingCondition Binding="{Binding IsVisible,Source={RelativeSource Self}}"
+                                                                                      Value="True"/>
+                                                                <BindingCondition Binding="{Binding IsShowAnswer,Source={RelativeSource AncestorType={x:Type model:QuestionItem}}}"
+                                                                                      Value="false"/>
+                                                                <BindingCondition Binding="{Binding IsChoiced,Source={RelativeSource AncestorType={x:Type model:QuestionItem}}}"
+                                                                                      Value="true"/>
+                                                            </MultiTrigger.Conditions>
+                                                            <Setter Property="IsEnabled"
+                                                                        Value="True"/>
+                                                        </MultiTrigger>
+                                                    </Button.Triggers>
+                                                </Button>
+                                                <VerticalStackLayout BackgroundColor="{StaticResource SnowGray}">
+                                                        <!--显示答案-->
+                                                        <Border Margin="10"
+                                                                Padding="10"
+                                                                BackgroundColor="White"
+                                                                IsVisible="{Binding IsShowAnswer}"
+                                                                StrokeThickness="0.1"
+                                                                StrokeShape="RoundRectangle 10">
+                                                            <VerticalStackLayout>
+                                                                <FlexLayout JustifyContent="SpaceEvenly">
+                                                                    <VerticalStackLayout>
+                                                                        <Label Text="{Binding Answer,Source={RelativeSource AncestorType={x:Type model:QuestionItem}}}"
+                                                                   HorizontalOptions="CenterAndExpand"
+                                                                   TextColor="#00c492"/>
+                                                                        <Label Text="参考答案"
+                                                                   TextColor="{AppThemeBinding Dark={StaticResource Gray500},Light={StaticResource Gray300}}"
+                                                                   HorizontalOptions="CenterAndExpand"/>
+                                                                    </VerticalStackLayout>
+                                                                    <Border WidthRequest="1"/>
+                                                                    <VerticalStackLayout>
+                                                                        <Label Text="{Binding MyAnswer,Source={RelativeSource AncestorType={x:Type model:QuestionItem}}}"
+                                                                   HorizontalOptions="CenterAndExpand">
+                                                                            <Label.Triggers>
+                                                                                <DataTrigger TargetType="Label"
+                                                                                 Binding="{Binding MyAnswer,Source={RelativeSource AncestorType={x:Type model:QuestionItem}},Converter={StaticResource IsStringNullOrEmptyConverter}}"
+                                                                                 Value="true">
+                                                                                    <Setter Property="Text"
+                                                                                Value="未作答"/>
+                                                                                </DataTrigger>
+                                                                                <DataTrigger TargetType="Label"
+                                                                                 Binding="{Binding AnswerState,Source={RelativeSource AncestorType={x:Type model:QuestionItem}},Converter={StaticResource IsEqualConverter},ConverterParameter='未作答'}"
+                                                                                 Value="true">
+                                                                                    <Setter Property="TextColor"
+                                                                                Value="#ff5b5a"/>
+                                                                                </DataTrigger>
+                                                                                <DataTrigger TargetType="Label"
+                                                                                 Binding="{Binding AnswerState,Source={RelativeSource AncestorType={x:Type model:QuestionItem}},Converter={StaticResource IsEqualConverter},ConverterParameter='全对'}"
+                                                                                 Value="true">
+                                                                                    <Setter Property="TextColor"
+                                                                                Value="#2cc6a0"/>
+                                                                                </DataTrigger>
+                                                                                <DataTrigger TargetType="Label"
+                                                                                 Binding="{Binding AnswerState,Source={RelativeSource AncestorType={x:Type model:QuestionItem}},Converter={StaticResource IsEqualConverter},ConverterParameter='半对'}"
+                                                                                 Value="true">
+                                                                                    <Setter Property="TextColor"
+                                                                                Value="#ffc933"/>
+                                                                                </DataTrigger>
+                                                                                <DataTrigger TargetType="Label"
+                                                                                 Binding="{Binding AnswerState,Source={RelativeSource AncestorType={x:Type model:QuestionItem}},Converter={StaticResource IsEqualConverter},ConverterParameter='错误'}"
+                                                                                 Value="true">
+                                                                                    <Setter Property="TextColor"
+                                                                                Value="#ff5b5a"/>
+                                                                                </DataTrigger>
+                                                                            </Label.Triggers>
+                                                                        </Label>
+                                                                        <Label Text="我的答案"
+                                                                   TextColor="{AppThemeBinding Dark={StaticResource Gray500},Light={StaticResource Gray300}}"
+                                                                   HorizontalOptions="CenterAndExpand"/>
+                                                                    </VerticalStackLayout>
+                                                                </FlexLayout>
+                                                                <Border Margin="10"
+                                                                        BackgroundColor="{StaticResource SnowGray}"
+                                                                        StrokeThickness="0"
+                                                                        StrokeShape="RoundRectangle 10">
+                                                                    <Label HorizontalOptions="CenterAndExpand"
+                                                                           Margin="5">
+                                                                        <Label.FormattedText>
+                                                                            <FormattedString>
+                                                                                <Span Text="本题用时" />
+                                                                                <Span Text="{Binding Duration,Source={RelativeSource AncestorType={x:Type model:QuestionItem}}}"/>
+                                                                                <Span Text="秒"/>
+                                                                                <Span Text="做错" />
+                                                                                <Span Text="{Binding ErrorCount,Source={RelativeSource AncestorType={x:Type model:QuestionItem}}}"
+                                                                              TextColor="Red"/>
+                                                                                <Span Text="次"/>
+                                                                                <Span Text="累计作答" />
+                                                                                <Span Text="{Binding AnswerCount,Source={RelativeSource AncestorType={x:Type model:QuestionItem}}}"
+                                                                              TextColor="#2cc6a0"/>
+                                                                                <Span Text="次"/>
+                                                                            </FormattedString>
+                                                                        </Label.FormattedText>
+                                                                    </Label>
+                                                                </Border>
+                                                            </VerticalStackLayout>
+                                                        </Border>
+                                                        <!--显示解析-->
+                                                        <Border IsVisible="{Binding IsShowAnswer}"
+                                                                StrokeShape="RoundRectangle 10"
+                                                                StrokeThickness="0.3"
+                                                                BackgroundColor="White"
+                                                                Margin="10"
+                                                                Padding="10">
+                                                        <Grid RowDefinitions="30,*,60">
+                                                                <HorizontalStackLayout Margin="0,0,0,10"
+                                                                                       Grid.Row="0">
+                                                                    <Border WidthRequest="4"
+                                                                    HeightRequest="4"
+                                                                    Margin="0,0,5,0"
+                                                                    StrokeThickness="0"
+                                                                    StrokeShape="RoundRectangle 2"
+                                                                    BackgroundColor="{StaticResource Primary}"/>
+                                                                    <Label Text="解析"
+                                                                   FontAttributes="Bold"/>
+                                                                </HorizontalStackLayout>
+                                                                <Label Text="{Binding Analysis}"
+                                                                       TextType="Html"
+                                                                       FontSize="{Binding FontSize,Source={RelativeSource AncestorType={x:Type vm:QuestionPracticeViewModel}}}"
+                                                                       Grid.Row="1"/>
+                                                                <FlexLayout JustifyContent="End"
+                                                                            Grid.Row="2"
+                                                                            HeightRequest="30"
+                                                                            Margin="0,30,0,0">
+                                                                    <Button Text="纠错"
+                                                                            BackgroundColor="Transparent"
+                                                                            BorderColor="{StaticResource Gray100}"
+                                                                            BorderWidth="1"
+                                                                            TextColor="{StaticResource Gray200}"
+                                                                            Padding="15,5"
+                                                                            Margin="10,0"/>
+                                                                    <Button Text="答疑"
+                                                                            Padding="15,5"
+                                                                            />
+                                                                </FlexLayout>
+                                                            </Grid>
+                                                        </Border>
+                                                        <!--视频解析-->
+                                                        <!--评论-->
+
+                                                    </VerticalStackLayout>
+
+                                            </VerticalStackLayout>
+                                        </DataTemplate>
+                                    </BindableLayout.ItemTemplate>
+                                </VerticalStackLayout>
+                            </VerticalStackLayout>
+                        </ScrollView>
+                    </Grid>
+                </DataTemplate>
+            </CarouselView.ItemTemplate>
+        </CarouselView>
+        <Grid Grid.Row="1"
+              x:Name="tabbar"
+              ColumnDefinitions="*,*,*,*"
+              BackgroundColor="White">
+            <VerticalStackLayout Grid.Column="0"
+                                 VerticalOptions="CenterAndExpand">
+                <Label Text="{mi:Material Icon=ListAlt}"
+                       FontSize="24"
+                       HorizontalOptions="CenterAndExpand"/>
+                <Label Text="答题卡"
+                       HorizontalOptions="CenterAndExpand"
+                       FontSize="12"/>
+                <VerticalStackLayout.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding AnswerCardCommand}"/>
+                </VerticalStackLayout.GestureRecognizers>
+            </VerticalStackLayout>
+            <VerticalStackLayout Grid.Column="1"
+                                 VerticalOptions="CenterAndExpand">
+                <Label Text="{mi:MaterialOutlined Icon=Calculate}"
+                       FontSize="24"
+                       HorizontalOptions="CenterAndExpand"/>
+                <Label Text="计算器"
+                       HorizontalOptions="CenterAndExpand"
+                       FontSize="12"/>
+                <VerticalStackLayout.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped"/>
+                </VerticalStackLayout.GestureRecognizers>
+            </VerticalStackLayout>
+            <VerticalStackLayout Grid.Column="2"
+                                 VerticalOptions="CenterAndExpand">
+                <Label Text="{mi:Material Icon=StarBorder}"
+                       FontSize="24"
+                       HorizontalOptions="CenterAndExpand">
+                    <Label.Triggers>
+                        <DataTrigger TargetType="Label"
+                                     Binding="{Binding CurrentQuestion.IsCollect}"
+                                     Value="true">
+                            <Setter Property="TextColor"
+                                    Value="Gold"/>
+                        </DataTrigger>
+                        <DataTrigger TargetType="Label"
+                                     Binding="{Binding CurrentQuestion.IsCollect}"
+                                     Value="false">
+                            <Setter Property="TextColor"
+                                    Value="Black"/>
+                        </DataTrigger>
+                    </Label.Triggers>
+                </Label>
+                <Label Text="收藏"
+                       HorizontalOptions="CenterAndExpand"
+                       FontSize="12"/>
+                <VerticalStackLayout.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding CollectCommand}"/>
+                </VerticalStackLayout.GestureRecognizers>
+            </VerticalStackLayout>
+            <VerticalStackLayout Grid.Column="3"
+                                 VerticalOptions="CenterAndExpand">
+                <Label Text="{mi:MaterialOutlined Icon=Chat}"
+                       FontSize="24"
+                       HorizontalOptions="CenterAndExpand"/>
+                <Label Text="评论"
+                       HorizontalOptions="CenterAndExpand"
+                       FontSize="12"/>
+                <VerticalStackLayout.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding CommentCommand}"/>
+                </VerticalStackLayout.GestureRecognizers>
+            </VerticalStackLayout>
+        </Grid>
+    </Grid>
+
+</ContentPage>

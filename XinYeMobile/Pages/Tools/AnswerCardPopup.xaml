@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<toolkit:Popup  xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+                xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+                xmlns:vm="clr-namespace:XinYeMobile.ViewModels"
+                xmlns:model="clr-namespace:XinYeMobile.Models.QuestionBankModels"
+                x:DataType="vm:AnswerCardPopupViewModel"
+                x:Class="XinYeMobile.Pages.Tools.AnswerCardPopup"
+                Color="White"
+                VerticalOptions="End"
+                >
+
+    <Grid RowDefinitions="50,*,auto">
+        <Label Text="答题卡"
+               Grid.Row="0"
+               HeightRequest="50"
+               FontAttributes="Bold"
+               FontSize="16"
+               VerticalOptions="CenterAndExpand"
+               VerticalTextAlignment="Center"
+               HorizontalOptions="CenterAndExpand"/>
+        <CollectionView ItemsSource="{Binding AnswerList}"
+                        Grid.Row="1"
+                        MaximumHeightRequest="400">
+            <CollectionView.ItemsLayout>
+                <GridItemsLayout Orientation="Vertical"
+                                 Span="6"
+                                 HorizontalItemSpacing="10"
+                                 VerticalItemSpacing="10"
+                                 />
+            </CollectionView.ItemsLayout>
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="model:AnswerCardItemModel">
+                    <Border HeightRequest="40"
+                            WidthRequest="40"
+                            x:Name="border"
+                            StrokeShape="RoundRectangle 20">
+                        <Label Text="{Binding Index}"
+                               TextColor="White"
+                               VerticalOptions="CenterAndExpand"
+                               HorizontalOptions="CenterAndExpand"
+                               >
+                            <Label.Triggers>
+                                <DataTrigger TargetType="Label"
+                                             Binding="{Binding BackgroundColor,Source={Reference border}}"
+                                             Value="white">
+                                    <Setter Property="TextColor"
+                                            Value="Black"/>
+                                </DataTrigger>
+                            </Label.Triggers>
+                        </Label>
+                        <Border.Triggers>
+                            <MultiTrigger TargetType="Border">
+                                <MultiTrigger.Conditions>
+                                    <BindingCondition Binding="{Binding IsPracticeMode,Source={RelativeSource AncestorType={x:Type vm:AnswerCardPopupViewModel}}}"
+                                                      Value="true"/>
+                                    <BindingCondition Binding="{Binding ResultState}"
+                                                      Value="0"/>
+                                </MultiTrigger.Conditions>
+                                <Setter Property="BackgroundColor"
+                                        Value="White"/>
+                            </MultiTrigger>
+                            <MultiTrigger TargetType="Border">
+                                <MultiTrigger.Conditions>
+                                    <BindingCondition Binding="{Binding IsPracticeMode,Source={RelativeSource AncestorType={x:Type vm:AnswerCardPopupViewModel}}}"
+                                                      Value="true"/>
+                                    <BindingCondition Binding="{Binding ResultState}"
+                                                      Value="1"/>
+                                </MultiTrigger.Conditions>
+                                <Setter Property="BackgroundColor"
+                                        Value="Green"/>
+                                <Setter Property="StrokeThickness"
+                                        Value="0"/>
+                            </MultiTrigger>
+                            <MultiTrigger TargetType="Border">
+                                <MultiTrigger.Conditions>
+                                    <BindingCondition Binding="{Binding IsPracticeMode,Source={RelativeSource AncestorType={x:Type vm:AnswerCardPopupViewModel}}}"
+                                                      Value="true"/>
+                                    <BindingCondition Binding="{Binding ResultState}"
+                                                      Value="2"/>
+                                </MultiTrigger.Conditions>
+                                <Setter Property="BackgroundColor"
+                                        Value="Red"/>
+                                <Setter Property="StrokeThickness"
+                                        Value="0"/>
+                            </MultiTrigger>
+                            <MultiTrigger TargetType="Border">
+                                <MultiTrigger.Conditions>
+                                    <BindingCondition Binding="{Binding IsPracticeMode,Source={RelativeSource AncestorType={x:Type vm:AnswerCardPopupViewModel}}}"
+                                                      Value="true"/>
+                                    <BindingCondition Binding="{Binding ResultState}"
+                                                      Value="3"/>
+                                </MultiTrigger.Conditions>
+                                <Setter Property="BackgroundColor"
+                                        Value="Yellow"/>
+                                <Setter Property="StrokeThickness"
+                                        Value="0"/>
+                            </MultiTrigger>
+                            <MultiTrigger TargetType="Border">
+                                <MultiTrigger.Conditions>
+                                    <BindingCondition Binding="{Binding IsPracticeMode,Source={RelativeSource AncestorType={x:Type vm:AnswerCardPopupViewModel}}}"
+                                                  Value="false"/>
+                                    <BindingCondition Binding="{Binding AnswerState}"
+                                                  Value="0"/>
+                                </MultiTrigger.Conditions>
+                                <Setter Property="BackgroundColor"
+                                        Value="White"/>
+                            </MultiTrigger>
+                            <MultiTrigger TargetType="Border">
+                                <MultiTrigger.Conditions>
+                                    <BindingCondition Binding="{Binding IsPracticeMode,Source={RelativeSource AncestorType={x:Type vm:AnswerCardPopupViewModel}}}"
+                                                  Value="false"/>
+                                    <BindingCondition Binding="{Binding AnswerState}"
+                                                  Value="1"/>
+                                </MultiTrigger.Conditions>
+                                <Setter Property="BackgroundColor"
+                                        Value="Yellow"/>
+                            </MultiTrigger>
+                            <MultiTrigger TargetType="Border">
+                                <MultiTrigger.Conditions>
+                                    <BindingCondition Binding="{Binding IsPracticeMode,Source={RelativeSource AncestorType={x:Type vm:AnswerCardPopupViewModel}}}"
+                                                  Value="false"/>
+                                    <BindingCondition Binding="{Binding AnswerState}"
+                                                  Value="2"/>
+                                </MultiTrigger.Conditions>
+                                <Setter Property="BackgroundColor"
+                                        Value="{StaticResource Primary}"/>
+                            </MultiTrigger>
+                        </Border.Triggers>
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding TapCommand,Source={RelativeSource AncestorType={x:Type vm:AnswerCardPopupViewModel}}}"
+                                                  CommandParameter="{Binding Index}"
+                                                  Tapped="ClickIndex"/>
+                        </Border.GestureRecognizers>
+                    </Border>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+        <Button Text="交卷"
+                Grid.Row="2"
+                Margin="30"/>
+    </Grid>
+
+</toolkit:Popup>

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<toolkit:Popup xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+               xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+               xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+               xmlns:vm="clr-namespace:XinYeMobile.ViewModels"
+               x:DataType="vm:CommentEntryPopupViewModel"
+               x:Class="XinYeMobile.Pages.Tools.CommentEntryPopup"
+               Color="White"
+               x:Name="commentEntry"
+               VerticalOptions="End">
+    <Grid RowDefinitions="*,50"
+          x:Name="grid"
+          VerticalOptions="CenterAndExpand">
+        <Editor Placeholder="我的评价"
+                Grid.Row="0"
+                x:Name="editor"
+                MinimumHeightRequest="50"
+                MaximumHeightRequest="150"
+                Focused="editor_Focused"
+                Unfocused="editor_Unfocused"
+                AutoSize="TextChanges">
+        </Editor>
+        <Grid   Grid.Row="2" 
+              ColumnDefinitions="50,50,50,*,80">
+            <Button Text="发送"
+                    Margin="5,5"
+                    Grid.Column="5"/>
+        </Grid>
+    </Grid>
+</toolkit:Popup>

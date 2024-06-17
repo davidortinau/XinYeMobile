@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<toolkit:Popup xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+               xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+               xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+               xmlns:vm="clr-namespace:XinYeMobile.ViewModels"
+               xmlns:model="clr-namespace:XinYeMobile.Models"
+               x:DataType="vm:CommentPopupViewModel"
+               x:Class="XinYeMobile.Pages.Tools.CommentPopup"
+               Color="White"
+               VerticalOptions="End"
+               x:Name="comment">
+    <toolkit:Popup.Resources>
+        <ResourceDictionary>
+            <toolkit:InvertedBoolConverter x:Key="InvertedBoolConverter" />
+        </ResourceDictionary>
+    </toolkit:Popup.Resources>
+    <Grid RowDefinitions="50,*,50">
+        <Label Text="评论"
+               Grid.Row="0"
+               VerticalOptions="Center"
+               HorizontalOptions="Center"
+               FontAttributes="Bold"/>
+        <CollectionView ItemsSource="{Binding CommentList}"
+                        Grid.Row="1"
+                        IsVisible="{Binding IsShowLoading,Converter={StaticResource InvertedBoolConverter}}"
+                        MaximumHeightRequest="400">
+            <CollectionView.EmptyView>
+                <VerticalStackLayout>
+                    <Image Source="page_empty.png"/>
+                    <Label Text="当前暂无评论,快来评论吧"
+                           HorizontalOptions="CenterAndExpand"/>
+                </VerticalStackLayout>
+            </CollectionView.EmptyView>
+        </CollectionView>
+        <Grid Grid.Row="2"
+              ColumnDefinitions="*,80">
+            <Border Grid.Column="0"
+                    StrokeThickness="0"
+                    BackgroundColor="{StaticResource SnowGray}"
+                    StrokeShape="RoundRectangle 10"
+                    Margin="5"
+                    >
+                <Label Text="一起来交流吧"
+                       LineBreakMode="TailTruncation"
+                       x:Name="input"
+                       Margin="5,0"
+                       VerticalOptions="CenterAndExpand"/>
+                <Border.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding EntryCommand}"
+                                          CommandParameter="{Binding Text,Source={Reference input}}"/>
+                </Border.GestureRecognizers>
+            </Border>
+            <Button Text="发送"
+                    Margin="10,5"
+                    Grid.Column="1"/>
+        </Grid>
+        <ActivityIndicator Grid.Row="1"
+                           IsRunning="{Binding IsShowLoading}"
+                           HeightRequest="50"
+                           WidthRequest="50"/>
+    </Grid>
+</toolkit:Popup>
