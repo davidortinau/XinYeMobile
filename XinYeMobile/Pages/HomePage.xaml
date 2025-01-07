@@ -9,8 +9,7 @@
              >
     <VerticalStackLayout VerticalOptions="Center">
         <Button Text="click"
-                Command="{Binding GotoCommand}"
-                />
+            Clicked="Button_Clicked"/>
     </VerticalStackLayout>
 
 </ContentPage>

@@ -8,7 +8,7 @@
              xmlns:converter="clr-namespace:XinYeMobile.Converters"
              x:Class="XinYeMobile.Models.QuestionBankModels.QuestionPracticePage"
              x:DataType="vm:QuestionPracticeViewModel"
-             Shell.TabBarIsVisible="False"
+             
              Title="章节练习">
     <ContentPage.Resources>
         <ResourceDictionary>
@@ -24,7 +24,7 @@
             
         </ResourceDictionary>
     </ContentPage.Resources>
-    <Shell.TitleView>
+    <NavigationPage.TitleView>
         <Grid RowDefinitions="*,*">
             <Grid Grid.Row="0"
                   ColumnDefinitions="auto,*">
@@ -93,7 +93,7 @@
                 </Button>
             </Grid>
         </Grid>
-    </Shell.TitleView>
+    </NavigationPage.TitleView>
     <Grid RowDefinitions="*,50">
         <CarouselView ItemsSource="{Binding QuestionList}"
                       CurrentItem="{Binding CurrentQuestion,Mode=OneWayToSource}"

@@ -1,4 +1,6 @@
+#if ANDROID
 using Android.Media;
+#endif
 using CommunityToolkit.Maui.Core.Platform;
 using CommunityToolkit.Maui.Views;
 using XinYeMobile.ViewModels;
@@ -29,7 +31,7 @@ public partial class CommentEntryPopup : Popup
         }
 		catch(Exception ex) 
 		{
-			await Shell.Current.DisplayAlert("�쳣",ex.ToString(),"OK");
+			await Shell.Current.DisplayAlert("�쳣",ex.ToString(),"OK");
 		}
 
     }

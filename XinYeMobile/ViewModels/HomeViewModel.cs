@@ -28,6 +28,7 @@ namespace XinYeMobile.ViewModels
             try
             {
                 await Shell.Current.GoToAsync("Practice");
+
             }
             catch(Exception ex) 
             {
